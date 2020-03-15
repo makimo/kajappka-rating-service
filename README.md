@@ -39,3 +39,32 @@ The production Docker image can be built with
 ```
 $ docker build -f docker/production/Dockerfile -t kajappka-rating-service:latest .
 ```
+
+## Using with provided image
+
+Provided image can be used with Docker directly:
+
+```
+docker run --rm -it -p 8080:8080 -e VERIFIER_URI=http://localhost:8000/success \
+-e MONGO_CONNECTION_STRING=mongodb://localhost:27017/ -e MONGO_DB_NAME=ratings \
+-e MONGO_COLLECTION_NAME=ratings \
+docker.pkg.github.com/makimo/kajappka-rating-service/kajappka-rating-service:latest
+```
+
+The verifier service will be available at `http://localhost:8080`.
+
+Or within the `docker-compose.yml`:
+
+```
+services:
+  kajappka-rating-service:
+    image: docker.pkg.github.com/makimo/kajappka-rating-service/kajappka-rating-service:latest
+    environment:
+    environment:
+      HOST: "0.0.0.0"
+      PORT: 8080
+      VERIFIER_URI: "http://verifier-mock:8000/success"
+      MONGO_CONNECTION_STRING: "mongodb://mongodb:27017/"
+      MONGO_DB_NAME: "ratings"
+      MONGO_COLLECTION_NAME: "ratings"
+```
