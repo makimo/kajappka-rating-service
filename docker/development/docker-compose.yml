@@ -1,0 +1,27 @@
+version: "3.7"
+
+services:
+  kajappka-rating-service:
+    image: golang:alpine
+    volumes:
+      - "../..:/go/src/github.com/makimo/kajappka-rating-service/"
+    working_dir: /go/src/github.com/makimo/kajappka-rating-service/
+    expose:
+      - "8080"
+    ports:
+      - "8080:8080"
+    environment:
+      HOST: "0.0.0.0"
+      PORT: 8080
+      VERIFIER_URI: "http://verifier-mock:8000/success"
+      MONGO_CONNECTION_STRING: "mongodb://mongodb:27017/"
+      MONGO_DB_NAME: "ratings"
+      MONGO_COLLECTION_NAME: "ratings"
+    command: ["sh", "docker/development/build-and-run.sh"]
+    depends_on:
+      - mongodb
+      - verifier-mock
+  verifier-mock:
+    image: docker.pkg.github.com/makimo/verifier-mock/verifier-mock:latest
+  mongodb:
+    image: mongo:latest
